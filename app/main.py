@@ -26,15 +26,15 @@ def brute_force_password(start: int, end: int) -> None:
     for num in range(start, end):
         str_num = str(num).zfill(8)
         hashed = sha256_hash_str(str_num)
-        if hashed in PASSWORDS_TO_BRUTE_FORCE:
+        if hashed in set(PASSWORDS_TO_BRUTE_FORCE):
             print("RES_PASS:", str_num)
 
 
-def main_multiprocess_executor():
+def main_multiprocess_executor() -> None:
     futures = []
     max_number = 100_000_000
-    block_size = max_number // multiprocessing.cpu_count() - 1
-    with ProcessPoolExecutor(multiprocessing.cpu_count() - 1) as executor:
+    block_size = max_number // multiprocessing.cpu_count()
+    with ProcessPoolExecutor(multiprocessing.cpu_count()) as executor:
         for start in range(0, max_number, block_size):
             end = min(start + block_size, max_number)
             futures.append(executor.submit(brute_force_password, start, end))
